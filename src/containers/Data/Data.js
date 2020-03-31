@@ -5,6 +5,8 @@ import WorldChart from '../../components/WorldChart/WorldChart';
 import CompareChart from '../../components/CompareChart/CompareChart';
 import TextData from '../../components/TextData/TextData';
 
+// https://github.com/pomber/covid19
+
 class Data extends Component {
     constructor(props) {
         super(props);
