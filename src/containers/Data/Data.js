@@ -88,6 +88,7 @@ class Data extends Component {
                 <TextData worldData={this.state.worldData} countries={this.state.countries} data={this.state.data}></TextData>
                 <WorldChart xLabels={this.state.xLabels} worldData={this.state.worldData} countries={this.state.countries} data={this.state.data}></WorldChart>
                 <CompareChart xLabels={this.state.xLabels} countries={this.state.countries} data={this.state.data}></CompareChart>
+                <p className={classes.DataSource}>Data Source: https://github.com/pomber/covid19</p>
             </div>
         );
     }
