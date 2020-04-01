@@ -50,7 +50,7 @@ class CompareChart extends Component {
                         position: 'left',
                         scaleLabel: {
                             display: true,
-                            labelString: 'Num Cases',
+                            labelString: '# People',
                             fontSize: 25
                         },
                         ticks: {
@@ -81,6 +81,7 @@ class CompareChart extends Component {
             confirmed: true,
             deaths: false,
             recovered: false,
+            newcases: false,
             allColors: props.countries.map(c => false),
             colorsSet: false
         }
@@ -224,6 +225,33 @@ class CompareChart extends Component {
                     }
                 }
             });
+            datasets.push({
+                label: `${country} NewCases`,
+                data: data.map(point => point.newCases),
+                pointBackgroundColor: this.state.allColors[countryIndex],
+                pointBorderColor: this.state.allColors[countryIndex],
+                pointRadius: 0,
+                backgroundColor: this.state.allColors[countryIndex],
+                borderColor: this.state.allColors[countryIndex],
+                // pointStyle: 'triangle',
+                fill: false,
+                hidden: this.state.newcases===true ? false : true,
+                datalabels: {
+                    anchor: 'start',
+                    align: 'left',
+                    offset: 10,
+                    font: {
+                        size: 20
+                    },
+                    formatter: function(value, context) {
+                        let ret = '';
+                        if (context.dataIndex===data.length-1) {
+                            ret = `${country}: ${value} NC`;
+                        }
+                        return ret;
+                    }
+                }
+            });
         }        
 
         const lineData = {
@@ -240,23 +268,23 @@ class CompareChart extends Component {
         const clicked = e.target.value.toLowerCase();
         
         let datasets = this.state.lineData.datasets;
-        let newDatasets = datasets.slice();
-        let indices = [];
-        let status = false;
+        // let newDatasets = datasets.slice();
+        // let indices = [];
+        let status = this.state[clicked];
 
         datasets.forEach((d,i) => {
             if (this.state[clicked]) {
                 if((d.label.toLowerCase()).includes(clicked)) {
                     d.hidden = true; 
-                    status = false;
-                } 
+                }
             } else {
                 if((d.label.toLowerCase()).includes(clicked)) {
-                    d.hidden = false; 
-                    status = true;
+                    d.hidden = false;  
                 } 
             }                                      
-        });    
+        });   
+        status = !status;
+        
         this.setState({
             [clicked]: status,
             datasets: datasets
@@ -277,13 +305,18 @@ class CompareChart extends Component {
         if (!this.state.recovered) {
             recoveredClasses.push(classes.LegendButtonActive);
         }
+        let newCasesClasses = [classes.LegendButton];
+        if (!this.state.newcases) {
+            newCasesClasses.push(classes.LegendButtonActive);
+        }
 
         return (
             <div className={classes.CompareChart}>
                 <div className={classes.LegendButtons}>
-                    <button className={confirmedClasses.join(' ')} value={'confirmed'} onClick={(e) => this.legendClick(e)}>Confirmed Cases</button>
+                    <button className={confirmedClasses.join(' ')} value={'confirmed'} onClick={(e) => this.legendClick(e)}>Cases</button>
                     <button className={deathsClasses.join(' ')} value={'deaths'} onClick={(e) => this.legendClick(e)}>Deaths</button>
                     <button className={recoveredClasses.join(' ')}  value={'recovered'} onClick={(e) => this.legendClick(e)}>Recovered</button>
+                    <button className={newCasesClasses.join(' ')}  value={'newCases'} onClick={(e) => this.legendClick(e)}>Daily New Cases</button>
                 </div>
                 <div className={classes.Chart}>
                     <LineChart data={this.state.lineData} options={this.state.lineOptions}></LineChart>

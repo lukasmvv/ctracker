@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import classes from './TextData.module.css';
-import TextButton from './TextButton/TextButton';
 
 class TextData extends Component {
     constructor(props) {
@@ -27,16 +26,33 @@ class TextData extends Component {
         return true;
     }
 
+    formatNumber(num) {
+        let str = ''+num;
+        if (num > 1000000) {
+            return `${str.substring(0,4)},${str.substring(4,str.length)}`;
+        } else if (num > 100000) {
+            return `${str.substring(0,3)},${str.substring(3,str.length)}`;
+        } else if (num > 10000) {
+            return `${str.substring(0,2)},${str.substring(2,str.length)}`;
+        } else if (num >1000) {
+            return `${str.substring(0,1)},${str.substring(1,str.length)}`;
+        } else {
+            return `${num}`
+        }
+    }
+
     render() {
         
         return(
             <div>
-                <h1>World | {this.state.worldData[this.state.worldData.length-1].confirmed} | {this.state.worldData[this.state.worldData.length-1].deaths} | {this.state.worldData[this.state.worldData.length-1].recovered}</h1>
+                <h1>World | {this.formatNumber(this.state.worldData[this.state.worldData.length-1].confirmed)} | {this.formatNumber(this.state.worldData[this.state.worldData.length-1].deaths)} | {this.formatNumber(this.state.worldData[this.state.worldData.length-1].recovered)}</h1>
                 {this.state.countries.map((country,i) => {
                     const cData = this.state.data[country];
                     let allClasses = [];
 
                     if (cData[cData.length-1].confirmedPercentage < 1) {
+                        allClasses.push(classes.Button05);
+                    } else if (cData[cData.length-1].confirmedPercentage < 1) {
                         allClasses.push(classes.Button1);
                     } else if (cData[cData.length-1].confirmedPercentage < 5) {
                         allClasses.push(classes.Button5);
@@ -46,11 +62,12 @@ class TextData extends Component {
                         allClasses.push(classes.Button15);
                     } else if (cData[cData.length-1].confirmedPercentage < 20) {
                         allClasses.push(classes.Button20);
+                    } else if (cData[cData.length-1].confirmedPercentage < 30) {
+                        allClasses.push(classes.Button30);
                     } 
 
                     return <button key={i} className={allClasses.join(' ')} >
-                            {country} | {cData[cData.length-1].confirmed} ({(cData[cData.length-1].confirmedPercentage).toFixed(2)}%) | {cData[cData.length-1].deaths} ({(cData[cData.length-1].deathsPercentage).toFixed(2)}%) | {cData[cData.length-1].recovered} ({(cData[cData.length-1].recoveredPercentage).toFixed(2)}%)</button>
-                    // return (<div className={classes.Button}><TextButton country={country} cData={cData}></TextButton></div>);
+                            {country} | {this.formatNumber(cData[cData.length-1].confirmed)} ({(cData[cData.length-1].confirmedPercentage).toFixed(2)}%) | {this.formatNumber(cData[cData.length-1].deaths)} ({(cData[cData.length-1].deathsPercentage).toFixed(2)}%) | {this.formatNumber(cData[cData.length-1].recovered)} ({(cData[cData.length-1].recoveredPercentage).toFixed(2)}%)</button>
                 })}
             </div>
         );

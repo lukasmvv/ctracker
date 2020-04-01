@@ -61,6 +61,7 @@ class Data extends Component {
                 newData[country][i].confirmedPercentage = 100*(Math.round(precision*cData[i].confirmed/worldDateData.confirmed)/precision);
                 newData[country][i].deathsPercentage = 100*(Math.round(precision*cData[i].deaths/worldDateData.deaths)/precision);
                 newData[country][i].recoveredPercentage = 100*(Math.round(precision*cData[i].recovered/worldDateData.recovered)/precision);
+                i!==0 ? newData[country][i].newCases = newData[country][i].confirmed - newData[country][i-1].confirmed: newData[country][i].newCases = 0
             });
         });
 
@@ -83,12 +84,13 @@ class Data extends Component {
     render() {
         return (
             <div className={classes.Data}>
-                <h1>Country|Confirmed|Deaths|Recovered</h1>
+                <h1>Country | Cases | Deaths | Recovered</h1>
                 
                 <TextData worldData={this.state.worldData} countries={this.state.countries} data={this.state.data}></TextData>
                 <WorldChart xLabels={this.state.xLabels} worldData={this.state.worldData} countries={this.state.countries} data={this.state.data}></WorldChart>
                 <CompareChart xLabels={this.state.xLabels} countries={this.state.countries} data={this.state.data}></CompareChart>
-                <p className={classes.DataSource}>Data Source: https://github.com/pomber/covid19</p>
+                {/* <p className={classes.DataSource}>Data Source: https://github.com/pomber/covid19</p> */}
+                <p><a className={classes.DataSource} href="https://github.com/pomber/covid19">Data Source: https://github.com/pomber/covid19</a></p>
             </div>
         );
     }

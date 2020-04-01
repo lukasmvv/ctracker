@@ -18,12 +18,27 @@
     font-size: 30px;
 }
 
+.Button05 {
+    /* float: left; */
+    margin: 0 0;
+    padding: 0 0;
+    display: block;
+    font-size: 3px;
+}
+
+.Button05:hover {
+    margin: 0 0;
+    padding: 0 0;
+    /* transform: scale(1.5); */
+    font-size: 30px;
+}
+
 .Button1 {
     /* float: left; */
     margin: 0 0;
     padding: 0 0;
     display: block;
-    font-size: 5px;
+    font-size: 4px;
 }
 
 .Button1:hover {
@@ -38,7 +53,7 @@
     margin: 0 0;
     padding: 0 0;
     display: block;
-    font-size: 10px;
+    font-size: 7px;
 }
 
 .Button5:hover {
@@ -83,10 +98,25 @@
     margin: 0 0;
     padding: 0 0;
     display: block;
-    font-size: 30px;
+    font-size: 25px;
 }
 
 .Button20:hover {
+    margin: 0 0;
+    padding: 0 0;
+    /* transform: scale(1.5); */
+    font-size: 30px;
+}
+
+.Button30 {
+    /* float: left; */
+    margin: 0 0;
+    padding: 0 0;
+    display: block;
+    font-size: 30px;
+}
+
+.Button30:hover {
     margin: 0 0;
     padding: 0 0;
     /* transform: scale(1.5); */

@@ -86,7 +86,7 @@ class WorldChart extends Component {
                         position: 'left',
                         scaleLabel: {
                             display: true,
-                            labelString: 'Num Cases',
+                            labelString: '# People',
                             fontSize: 25
                         },
                         ticks: {

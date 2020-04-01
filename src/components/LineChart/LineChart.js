@@ -3,11 +3,7 @@ import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import classes from './LineChart.module.css';
 
-import { Parser as HtmlToReactParser } from 'html-to-react';
-
 Chart.plugins.unregister(ChartDataLabels);
-
-const htmlToReactParser = new HtmlToReactParser();
 
 class LineChart extends Component {
     constructor(props) {
