@@ -78,10 +78,10 @@ class CompareChart extends Component {
                     align: 'start'
                 }
             },
-            confirmed: true,
+            cases: true,
             deaths: false,
             recovered: false,
-            newcases: false,
+            daily: false,
             allColors: props.countries.map(c => false),
             colorsSet: false
         }
@@ -154,7 +154,7 @@ class CompareChart extends Component {
                 backgroundColor: this.state.allColors[countryIndex],
                 borderColor: this.state.allColors[countryIndex],
                 fill: false,
-                hidden: this.state.confirmed===true ? false : true,
+                hidden: this.state.cases===true ? false : true,
                 datalabels: {
                     anchor: 'start',
                     align: 'left',
@@ -166,6 +166,34 @@ class CompareChart extends Component {
                         let ret = '';
                         if (context.dataIndex===data.length-1) {
                             ret = `${country}: ${value} C`;
+                        }
+                        return ret;
+                    }
+                }
+            });
+            datasets.push({
+                label: `${country} Cases`,
+                data: data.map(point => point.confirmed - point.recovered - point.deaths),
+                borderDash: [10,5],
+                pointBackgroundColor: this.state.allColors[countryIndex],
+                pointBorderColor: this.state.allColors[countryIndex],
+                pointRadius: 0,
+                // borderWidth: 7,
+                backgroundColor: this.state.allColors[countryIndex],
+                borderColor: this.state.allColors[countryIndex],
+                fill: false,
+                hidden: this.state.cases===true ? false : true,
+                datalabels: {
+                    anchor: 'start',
+                    align: 'left',
+                    offset: 10,
+                    font: {
+                        size: 20
+                    },
+                    formatter: function(value, context) {
+                        let ret = '';
+                        if (context.dataIndex===data.length-1) {
+                            ret = `${country}: ${value} AC`;
                         }
                         return ret;
                     }
@@ -226,7 +254,7 @@ class CompareChart extends Component {
                 }
             });
             datasets.push({
-                label: `${country} NewCases`,
+                label: `${country} Daily`,
                 data: data.map(point => point.newCases),
                 pointBackgroundColor: this.state.allColors[countryIndex],
                 pointBorderColor: this.state.allColors[countryIndex],
@@ -235,7 +263,7 @@ class CompareChart extends Component {
                 borderColor: this.state.allColors[countryIndex],
                 // pointStyle: 'triangle',
                 fill: false,
-                hidden: this.state.newcases===true ? false : true,
+                hidden: this.state.daily===true ? false : true,
                 datalabels: {
                     anchor: 'start',
                     align: 'left',
@@ -248,6 +276,33 @@ class CompareChart extends Component {
                         if (context.dataIndex===data.length-1) {
                             ret = `${country}: ${value} NC`;
                         }
+                        return ret;
+                    }
+                }
+            });
+            datasets.push({
+                label: `${country} Last Daily Equivalent`,
+                data: data.map(point => data[data.length-1].newCases),
+                pointBackgroundColor: 'rgba(211,211,211)',
+                pointBorderColor: 'rgba(211,211,211)',
+                pointRadius: 0,
+                backgroundColor: 'rgba(211,211,211)',
+                borderColor: 'rgba(211,211,211)',
+                // pointStyle: 'triangle',
+                fill: false,
+                hidden: this.state.daily===true ? false : true,
+                datalabels: {
+                    anchor: 'start',
+                    align: 'left',
+                    offset: 10,
+                    font: {
+                        size: 20
+                    },
+                    formatter: function(value, context) {
+                        let ret = '';
+                        // if (context.dataIndex===data.length-1) {
+                        //     ret = `${country}: ${value} NC`;
+                        // }
                         return ret;
                     }
                 }
@@ -294,7 +349,7 @@ class CompareChart extends Component {
     render() {  
         // this.colors = this.generateColors(this.props.countries.length);
         let confirmedClasses = [classes.LegendButton];
-        if (!this.state.confirmed) {
+        if (!this.state.cases) {
             confirmedClasses.push(classes.LegendButtonActive);
         }
         let deathsClasses = [classes.LegendButton];
@@ -306,17 +361,17 @@ class CompareChart extends Component {
             recoveredClasses.push(classes.LegendButtonActive);
         }
         let newCasesClasses = [classes.LegendButton];
-        if (!this.state.newcases) {
+        if (!this.state.daily) {
             newCasesClasses.push(classes.LegendButtonActive);
         }
 
         return (
             <div className={classes.CompareChart}>
                 <div className={classes.LegendButtons}>
-                    <button className={confirmedClasses.join(' ')} value={'confirmed'} onClick={(e) => this.legendClick(e)}>Cases</button>
+                    <button className={confirmedClasses.join(' ')} value={'cases'} onClick={(e) => this.legendClick(e)}>Cases</button>
                     <button className={deathsClasses.join(' ')} value={'deaths'} onClick={(e) => this.legendClick(e)}>Deaths</button>
                     <button className={recoveredClasses.join(' ')}  value={'recovered'} onClick={(e) => this.legendClick(e)}>Recovered</button>
-                    <button className={newCasesClasses.join(' ')}  value={'newCases'} onClick={(e) => this.legendClick(e)}>Daily New Cases</button>
+                    <button className={newCasesClasses.join(' ')}  value={'daily'} onClick={(e) => this.legendClick(e)}>Daily New</button>
                 </div>
                 <div className={classes.Chart}>
                     <LineChart data={this.state.lineData} options={this.state.lineOptions}></LineChart>

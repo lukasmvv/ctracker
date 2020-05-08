@@ -20,7 +20,7 @@ class TextData extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        if(this.state.data===[] || this.state.countries===[] || this.state.worldData===[]) {
+        if(this.state.data===[] || this.state.countries===[] || this.state.worldData===[] || this.state.worldData.length<=1) {            
             return false;
         }
         return true;
@@ -29,7 +29,7 @@ class TextData extends Component {
     formatNumber(num) {
         let str = ''+num;
         if (num > 1000000) {
-            return `${str.substring(0,4)},${str.substring(4,str.length)}`;
+            return `${str.substring(0,1)},${str.substring(1,4)},${str.substring(4,str.length)}`;
         } else if (num > 100000) {
             return `${str.substring(0,3)},${str.substring(3,str.length)}`;
         } else if (num > 10000) {
@@ -41,11 +41,27 @@ class TextData extends Component {
         }
     }
 
+    getWorldString= () => {
+        if (this.state.worldData.length<=1) {
+            return '';
+        } else {
+            return `World | ${this.formatNumber(this.state.worldData[this.state.worldData.length-1].confirmed)} (+${this.formatNumber(this.state.worldData[this.state.worldData.length-1].confirmed - this.state.worldData[this.state.worldData.length-2].confirmed)}) 
+            | ${this.formatNumber(this.state.worldData[this.state.worldData.length-1].deaths)} (+${this.formatNumber(this.state.worldData[this.state.worldData.length-1].deaths - this.state.worldData[this.state.worldData.length-2].deaths)}) 
+            | ${this.formatNumber(this.state.worldData[this.state.worldData.length-1].recovered)} (+${this.formatNumber(this.state.worldData[this.state.worldData.length-1].recovered - this.state.worldData[this.state.worldData.length-2].recovered)})`
+        }
+    }
+
+    getCountryString = (cData, country) => {
+        return `${country} 
+        | ${this.formatNumber(cData[cData.length-1].confirmed)} (${(cData[cData.length-1].confirmedPercentage).toFixed(2)}%) (+${this.formatNumber(cData[cData.length-1].confirmed - cData[cData.length-2].confirmed)}) 
+        | ${this.formatNumber(cData[cData.length-1].deaths)} (${(cData[cData.length-1].deathsPercentage).toFixed(2)}%) (+${this.formatNumber(cData[cData.length-1].deaths - cData[cData.length-2].deaths)})
+        | ${this.formatNumber(cData[cData.length-1].recovered)} (${(cData[cData.length-1].recoveredPercentage).toFixed(2)}%) (+${this.formatNumber(cData[cData.length-1].recovered - cData[cData.length-2].recovered)})`;
+    }
+
     render() {
-        
         return(
             <div>
-                <h1>World | {this.formatNumber(this.state.worldData[this.state.worldData.length-1].confirmed)} | {this.formatNumber(this.state.worldData[this.state.worldData.length-1].deaths)} | {this.formatNumber(this.state.worldData[this.state.worldData.length-1].recovered)}</h1>
+                <h1>{this.getWorldString()}</h1>
                 {this.state.countries.map((country,i) => {
                     const cData = this.state.data[country];
                     let allClasses = [];
@@ -62,12 +78,16 @@ class TextData extends Component {
                         allClasses.push(classes.Button15);
                     } else if (cData[cData.length-1].confirmedPercentage < 20) {
                         allClasses.push(classes.Button20);
+                    } else if (cData[cData.length-1].confirmedPercentage < 25) {
+                        allClasses.push(classes.Button25);
                     } else if (cData[cData.length-1].confirmedPercentage < 30) {
                         allClasses.push(classes.Button30);
-                    } 
+                    }
 
                     return <button key={i} className={allClasses.join(' ')} >
-                            {country} | {this.formatNumber(cData[cData.length-1].confirmed)} ({(cData[cData.length-1].confirmedPercentage).toFixed(2)}%) | {this.formatNumber(cData[cData.length-1].deaths)} ({(cData[cData.length-1].deathsPercentage).toFixed(2)}%) | {this.formatNumber(cData[cData.length-1].recovered)} ({(cData[cData.length-1].recoveredPercentage).toFixed(2)}%)</button>
+                            {/* {country} | {this.formatNumber(cData[cData.length-1].confirmed)} ({(cData[cData.length-1].confirmedPercentage).toFixed(2)}%) | {this.formatNumber(cData[cData.length-1].deaths)} ({(cData[cData.length-1].deathsPercentage).toFixed(2)}%) | {this.formatNumber(cData[cData.length-1].recovered)} ({(cData[cData.length-1].recoveredPercentage).toFixed(2)}%) */}
+                            {this.getCountryString(cData, country)}
+                            </button>
                 })}
             </div>
         );

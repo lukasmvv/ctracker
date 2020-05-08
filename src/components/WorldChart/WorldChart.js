@@ -26,6 +26,19 @@ class WorldChart extends Component {
                         display: false
                     }
                 },{
+                    label: 'Active Cases',
+                    data: [],
+                    pointBackgroundColor: '#42B3D5',
+                    pointBorderColor: '#42B3D5',
+                    pointRadius: 0,
+                    backgroundColor: '#42B3D5',
+                    borderColor: '#42B3D5',
+                    fill: false,
+                    borderDash: [10,5],
+                    datalabels: {
+                        display: false
+                    }
+                },{
                     label: 'Deaths',
                     data: [],
                     pointBackgroundColor: '#E4521B',
@@ -124,10 +137,12 @@ class WorldChart extends Component {
         newLineData.datasets[0].data = [];
         newLineData.datasets[1].data = [];
         newLineData.datasets[2].data = [];
+        newLineData.datasets[3].data = [];
         state.worldData.forEach((point,i) => {
             newLineData.datasets[0].data.push(point.confirmed);
-            newLineData.datasets[1].data.push(point.deaths);
-            newLineData.datasets[2].data.push(point.recovered);
+            newLineData.datasets[1].data.push(point.confirmed - point.recovered - point.deaths);
+            newLineData.datasets[2].data.push(point.deaths);
+            newLineData.datasets[3].data.push(point.recovered);
         });
 
         return {
