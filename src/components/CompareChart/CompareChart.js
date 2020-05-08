@@ -321,7 +321,7 @@ class CompareChart extends Component {
 
     legendClick = (e) => {
         const clicked = e.target.value.toLowerCase();
-        
+        //git test
         let datasets = this.state.lineData.datasets;
         // let newDatasets = datasets.slice();
         // let indices = [];
