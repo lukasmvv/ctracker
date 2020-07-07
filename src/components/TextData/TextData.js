@@ -28,17 +28,18 @@ class TextData extends Component {
 
     formatNumber(num) {
         let str = ''+num;
-        if (num > 1000000) {
-            return `${str.substring(0,1)},${str.substring(1,4)},${str.substring(4,str.length)}`;
-        } else if (num > 100000) {
-            return `${str.substring(0,3)},${str.substring(3,str.length)}`;
-        } else if (num > 10000) {
-            return `${str.substring(0,2)},${str.substring(2,str.length)}`;
-        } else if (num >1000) {
-            return `${str.substring(0,1)},${str.substring(1,str.length)}`;
-        } else {
-            return `${num}`
+        let i = str.length;
+        let counter = 0;
+        let newStr = '';
+        while (i--) {
+            counter++;
+            if ((counter-1)%3===0 && (counter-1)!==0) {
+                newStr = [ str.slice(i,i+1), ',', ...newStr].join('');
+            } else {
+                newStr = [ str.slice(i,i+1), ...newStr].join('');
+            }
         }
+        return newStr;
     }
 
     getWorldString= () => {
