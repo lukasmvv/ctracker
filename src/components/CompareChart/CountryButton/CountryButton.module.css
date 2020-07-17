@@ -30,3 +30,23 @@
 .CountryButtonActive {
     background-color: rgb(173, 136, 170);	
 }
+
+@media only screen and (max-width: 600px) {
+    .CountryButton {
+        width: 10%;
+        height: 100%;
+        display: inline-block;
+        float: left;
+        font-size: 10px;
+        margin: auto auto;
+        background: #a5c9ec;
+        color: white;	
+        border: 1px solid rgba(0,0,0,0.21);
+        border-bottom-color: rgba(0,0,0,0.34);
+        text-shadow:0 1px 0 rgba(0,0,0,0.15);
+        box-shadow: 0 1px 0 rgba(255,255,255,0.34) inset, 
+                          0 2px 0 -1px rgba(0,0,0,0.13), 
+                          0 3px 0 -1px rgba(0,0,0,0.08), 
+                          0 3px 13px -1px rgba(0,0,0,0.21);
+    }
+  }

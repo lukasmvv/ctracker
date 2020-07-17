@@ -6,7 +6,7 @@ class TextData extends Component {
         super(props);
         this.state = {
             countries: props.countries,
-            data: props.data,
+            data: props.shouldAnimate ? props.animateData: props.data,
             worldData: props.worldData
         }
     }
@@ -14,7 +14,7 @@ class TextData extends Component {
     static getDerivedStateFromProps(nextProps, state) {
         return {
             countries: nextProps.countries,
-            data: nextProps.data,
+            data: nextProps.shouldAnimate ? nextProps.animateData : nextProps.data,
             worldData: nextProps.worldData
         }
     }
@@ -59,10 +59,24 @@ class TextData extends Component {
         | ${this.formatNumber(cData[cData.length-1].recovered)} (${(cData[cData.length-1].recoveredPercentage).toFixed(2)}%) (+${this.formatNumber(cData[cData.length-1].recovered - cData[cData.length-2].recovered)})`;
     }
 
+    getDateString = () => {
+        //console.log(typeof this.state.data['Afghanistan']===undefined);
+        if (this.state.worldData.length<=1) {
+            return '';
+        } else {
+            const len = this.state.data['Afghanistan'].length;
+            const date = new Date(this.state.data['Afghanistan'][len-1].date);
+            return `${('0'+date.getDate()).slice(-2)}/${('0'+(date.getMonth()+1)).slice(-2)}/${date.getFullYear()}`;
+        }
+    }
+
     render() {
+        //console.log(this.state.data['Afghanistan']);
         return(
-            <div>
+            <div>                
                 <h1>{this.getWorldString()}</h1>
+                <button className={classes.Animate} onClick={this.props.animate}>Animate</button>
+                <div className={classes.Date}>{this.getDateString()}</div>
                 {this.state.countries.map((country,i) => {
                     const cData = this.state.data[country];
                     let allClasses = [];

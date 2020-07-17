@@ -11,7 +11,11 @@ class Data extends Component {
     constructor(props) {
         super(props);
         this.state = { 
+            minCounter: 10,
+            shouldAnimate: false,
+            counter: 10,
             data: [],
+            animateData: false,
             countries: [],
             xLabels: [],  
             worldData: [{
@@ -81,12 +85,42 @@ class Data extends Component {
         }));
     }
 
+    animate = () => {
+        const interval = setInterval(() => {
+            let counter = this.state.counter;
+            if (counter<=this.state.data['Afghanistan'].length) {
+                const oldData = {...this.state.data};
+                //console.log(oldData);
+                let animateData = {};
+                for (var prop in oldData) {
+                    animateData[prop] = oldData[prop].slice(0,counter);
+                }
+                // this.setState({counter: counter++, animateData: animateData});
+                counter = counter+1;
+                // this.setState({counter: counter, animateData: animateData, shouldAnimate: true});
+                this.setState((state, props) => ({
+                    counter: counter, 
+                    animateData: animateData, 
+                    shouldAnimate: true
+                }));
+            } else {
+                counter = this.state.minCounter;
+                this.setState((state, props) => ({
+                    counter: counter, 
+                    shouldAnimate: false
+                }));
+                // this.setState({{counter: counter, shouldAnimate: false}});
+                clearInterval(interval);
+            }
+        }, 250);                  
+    }
+
     render() {
         return (
             <div className={classes.Data}>
                 <h1>Country | Cases | Deaths | Recovered</h1>
                 
-                <TextData worldData={this.state.worldData} countries={this.state.countries} data={this.state.data}></TextData>
+                <TextData worldData={this.state.worldData} countries={this.state.countries} data={this.state.data} shouldAnimate={this.state.shouldAnimate} animate={this.animate} animateData={this.state.animateData}></TextData>
                 <WorldChart xLabels={this.state.xLabels} worldData={this.state.worldData} countries={this.state.countries} data={this.state.data}></WorldChart>
                 <CompareChart xLabels={this.state.xLabels} countries={this.state.countries} data={this.state.data}></CompareChart>
                 {/* <p className={classes.DataSource}>Data Source: https://github.com/pomber/covid19</p> */}
