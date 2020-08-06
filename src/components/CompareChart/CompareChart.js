@@ -259,10 +259,11 @@ class CompareChart extends Component {
                 pointBackgroundColor: this.state.allColors[countryIndex],
                 pointBorderColor: this.state.allColors[countryIndex],
                 pointRadius: 0,
-                backgroundColor: this.state.allColors[countryIndex],
+                backgroundColor: this.state.allColors[countryIndex].substring(0,this.state.allColors[countryIndex].length-2)+'0.5)',
                 borderColor: this.state.allColors[countryIndex],
+                lineTension: 0,
                 // pointStyle: 'triangle',
-                fill: false,
+                fill: true,
                 hidden: this.state.daily===true ? false : true,
                 datalabels: {
                     anchor: 'start',
