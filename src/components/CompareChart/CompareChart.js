@@ -4,12 +4,10 @@ import LineChart from '../LineChart/LineChart';
 import CountryButton from './CountryButton/CountryButton';
 
 class CompareChart extends Component {
-
     constructor(props) {
         super(props);
         this.state = {
-            countries: props.countries,
-            countriesActive: props.countries.map(c => false),
+            countries: [],
             data: props.data,
             lineData: {
                 labels: props.xLabels, 
@@ -78,81 +76,185 @@ class CompareChart extends Component {
                     align: 'start'
                 }
             },
-            cases: true,
+            cases: false,
             deaths: false,
             recovered: false,
-            daily: false,
-            allColors: props.countries.map(c => false),
-            colorsSet: false
+            daily: true,
+            colorsSet: false,
+
+            getcookie: this.getCookie.bind(this)
         }
         
     }
 
+    componentDidMount() {
+        if (this.props.countries.length>0) {
+            console.log('update');
+            
+            const favs = this.getCookie('favs');
+            console.log(favs);
+            const countries = this.props.countries.map(c => {
+                return {
+                    countryName: c,
+                    active: false,
+                    fav: false,
+                    color: `rgba(${parseInt(255*Math.random())}, ${parseInt(255*Math.random())}, ${parseInt(255*Math.random())}, 1)`
+                }
+            });
+            console.log(countries);
+            countries.forEach(c => {
+                favs.forEach(f => {
+                    if (c.countryName===f) {
+                        c.fav = true;
+                    }
+                });
+            });
+            this.setState({countries: [...countries]});
+            console.log(this.state);
+            return true;
+        } 
+    }
+
+    // shouldComponentUpdate(nextProps, nextState) {
+    //     // const options = state.lineOptions; 
+    //     // let isSet = state.colorsSet;
+        
+    //     // // console.log(nextProps.countries.length>0 && isSet===false);
+    //     // if (nextProps.countries.length>0 && isSet===false) {   
+    //     //     isSet = true;            
+    //     //     return {
+    //     //         data: nextProps.data, 
+    //     //         countries: nextProps.countries.map(c => {
+    //     //             return {
+    //     //                 countryName: c,
+    //     //                 active: false,
+    //     //                 fav: false,
+    //     //                 color: `rgba(${parseInt(255*Math.random())}, ${parseInt(255*Math.random())}, ${parseInt(255*Math.random())}, 1)`
+    //     //             }
+    //     //         }),
+    //     //         lineOptions: options,
+    //     //         colorsSet: isSet
+    //     //     }
+    //     // }  else {
+    //     //     return state;
+    //     // }  
+    //     if (JSON.stringify(this.state.countries)!==JSON.stringify(nextState.countries)) {
+    //         console.log('updates');
+    //         console.log(nextState);
+    //         // const favs = this.getCookie('favs');
+    //         // console.log(favs);
+    //         // const countries = this.state.countries;
+    //         // countries.forEach(c => {
+    //         //     favs.forEach(f => {
+    //         //         if (c.countryName===f) {
+    //         //             c.fav = true;
+    //         //         }
+    //         //     });
+    //         // });
+    //         // this.setState({countries: [...countries]});
+
+    //         return true;
+    //     } 
+    //     return false;
+    // }
+
     static getDerivedStateFromProps(nextProps, state) {
-        const options = state.lineOptions;
-        let allColors = state.allColors; 
+        const options = state.lineOptions; 
         let isSet = state.colorsSet;
         
         // console.log(nextProps.countries.length>0 && isSet===false);
-        if (nextProps.countries.length>0 && isSet===false) {
-            allColors = [];      
-            for (var i=0;i<nextProps.countries.length;i++) {
-                allColors.push(`rgba(${parseInt(255*Math.random())}, ${parseInt(255*Math.random())}, ${parseInt(255*Math.random())}, 1)`);               
+        if (nextProps.countries.length>0 && isSet===false) {   
+            isSet = true;            
+            const favs = state.getcookie('favs');
+            return {
+                data: nextProps.data, 
+                countries: nextProps.countries.map(c => {
+                    return {
+                        countryName: c,
+                        active: false,
+                        fav: favs.includes(c) ? true : false,
+                        color: `rgba(${parseInt(255*Math.random())}, ${parseInt(255*Math.random())}, ${parseInt(255*Math.random())}, 1)`
+                    }
+                }),
+                lineOptions: options,
+                colorsSet: isSet
             }
-            isSet = true;
-        }     
-
-        return {
-            data: nextProps.data, 
-            countries: nextProps.countries,
-            lineOptions: options,
-            allColors: allColors,
-            colorsSet: isSet
-        }
+        }  else {
+            return state;
+        }           
     }
 
-    // generateColors(numCol) {
-    //     let allColors = [];
-    //     for (var i=0;i<numCol;i++) {
-    //         allColors.push(`rgba(${parseInt(255*Math.random())}, ${parseInt(255*Math.random())}, ${parseInt(255*Math.random())}, 1)`);
-    //     }
-    //     return allColors;
-    // }
+    getCookie = (name) => {
+        const cookieArray = document.cookie.split(';');
+        var nameEQ = name + "=";
+
+        // looping through all cookies
+        for (var i=0;i<cookieArray.length;i++) {
+            let c = cookieArray[i];
+
+            // removing leading spaces
+            if (c.charAt(0)===' ') {
+                c = c.substring(1,c.length);
+            }
+
+            // if found returning all values in array
+            if (c.includes(nameEQ)) {
+                return c.substring(nameEQ.length,c.length).split(',');
+            }
+        }
+        return null;
+    }
+
+    setCookie = (name, value, expireDate) => {
+        const cookieName = `${name}=${value}; `;
+        const expires = `expires=${expireDate}; `;
+        const cookie = `${cookieName}${expires}path=/`;
+        document.cookie = cookie;
+    }
+
+    eraseCookie = (name) => {
+        document.cookie = `${name}+=; Max-Age=-99999999;`;
+    }
 
     countryClicked = (e) => {
-        const country = e.target.value;
-        const data = this.state.data[country];
-        const countryIndex = this.state.countries.indexOf(country);
-        
-        const newCountriesActive = this.state.countriesActive;
-        const countryActive = newCountriesActive[countryIndex];
+        // getting country object
+        const countries = this.state.countries
+        const country = countries.filter(c => {
+            return c.countryName === e.target.value;
+        })[0];
+        let cIndex = countries.findIndex(x => x.countryName === e.target.value);
 
+        // getting and setting data
+        const data = this.state.data[country.countryName];
         let datasets = this.state.lineData.datasets;
 
-        if (countryActive) {
-            newCountriesActive[countryIndex] = !countryActive;
+        // deactivating country
+        if (country.active) {
+            country.active = !country.active;
 
             let indices = [];
             
             datasets.forEach((d,i) => {
-                if (d.label.includes(country)) {
+                if (d.label.includes(country.countryName)) {
                     indices.push(i);
                 }                
             }); 
             for (var i=indices.length-1;i>-1;i--) {
                 datasets.splice(indices[i],1);
             }
-        } else {
-            newCountriesActive[countryIndex] = !countryActive;//
+        } 
+        // activating country
+        else {
+            country.active = !country.active;
             datasets.push({
-                label: `${country} Confirmed Cases`,
+                label: `${country.countryName} Confirmed Cases`,
                 data: data.map(point => point.confirmed),
-                pointBackgroundColor: this.state.allColors[countryIndex],
-                pointBorderColor: this.state.allColors[countryIndex],
+                pointBackgroundColor: country.color,
+                pointBorderColor: country.color,
                 pointRadius: 0,
                 // borderWidth: 7,
-                backgroundColor: this.state.allColors[countryIndex],
-                borderColor: this.state.allColors[countryIndex],
+                backgroundColor: country.color,
+                borderColor: country.color,
                 fill: false,
                 hidden: this.state.cases===true ? false : true,
                 datalabels: {
@@ -165,22 +267,22 @@ class CompareChart extends Component {
                     formatter: function(value, context) {
                         let ret = '';
                         if (context.dataIndex===data.length-1) {
-                            ret = `${country}: ${value} C`;
+                            ret = `${country.countryName}: ${value} C`;
                         }
                         return ret;
                     }
                 }
             });
             datasets.push({
-                label: `${country} Cases`,
+                label: `${country.countryName} Cases`,
                 data: data.map(point => point.confirmed - point.recovered - point.deaths),
                 borderDash: [10,5],
-                pointBackgroundColor: this.state.allColors[countryIndex],
-                pointBorderColor: this.state.allColors[countryIndex],
+                pointBackgroundColor: country.color,
+                pointBorderColor: country.color,
                 pointRadius: 0,
                 // borderWidth: 7,
-                backgroundColor: this.state.allColors[countryIndex],
-                borderColor: this.state.allColors[countryIndex],
+                backgroundColor: country.color,
+                borderColor: country.color,
                 fill: false,
                 hidden: this.state.cases===true ? false : true,
                 datalabels: {
@@ -193,20 +295,20 @@ class CompareChart extends Component {
                     formatter: function(value, context) {
                         let ret = '';
                         if (context.dataIndex===data.length-1) {
-                            ret = `${country}: ${value} AC`;
+                            ret = `${country.countryName}: ${value} AC`;
                         }
                         return ret;
                     }
                 }
             });
             datasets.push({
-                label: `${country} Deaths`,
+                label: `${country.countryName} Deaths`,
                 data: data.map(point => point.deaths),
-                pointBackgroundColor: this.state.allColors[countryIndex],
-                pointBorderColor: this.state.allColors[countryIndex],
+                pointBackgroundColor: country.color,
+                pointBorderColor: country.color,
                 pointRadius: 0,
-                backgroundColor: this.state.allColors[countryIndex],
-                borderColor: this.state.allColors[countryIndex],
+                backgroundColor: country.color,
+                borderColor: country.color,
                 // pointStyle: 'star',
                 fill: false,
                 hidden: this.state.deaths===true ? false : true,
@@ -220,20 +322,20 @@ class CompareChart extends Component {
                     formatter: function(value, context) {
                         let ret = '';
                         if (context.dataIndex===data.length-1) {
-                            ret = `${country}: ${value} D`;
+                            ret = `${country.countryName}: ${value} D`;
                         }
                         return ret;
                     }
                 }
             });
             datasets.push({
-                label: `${country} Recovered`,
+                label: `${country.countryName} Recovered`,
                 data: data.map(point => point.recovered),
-                pointBackgroundColor: this.state.allColors[countryIndex],
-                pointBorderColor: this.state.allColors[countryIndex],
+                pointBackgroundColor: country.color,
+                pointBorderColor: country.color,
                 pointRadius: 0,
-                backgroundColor: this.state.allColors[countryIndex],
-                borderColor: this.state.allColors[countryIndex],
+                backgroundColor: country.color,
+                borderColor: country.color,
                 // pointStyle: 'triangle',
                 fill: false,
                 hidden: this.state.recovered===true ? false : true,
@@ -247,20 +349,20 @@ class CompareChart extends Component {
                     formatter: function(value, context) {
                         let ret = '';
                         if (context.dataIndex===data.length-1) {
-                            ret = `${country}: ${value} R`;
+                            ret = `${country.countryName}: ${value} R`;
                         }
                         return ret;
                     }
                 }
             });
             datasets.push({
-                label: `${country} Daily`,
+                label: `${country.countryName} Daily`,
                 data: data.map(point => point.newCases),
-                pointBackgroundColor: this.state.allColors[countryIndex],
-                pointBorderColor: this.state.allColors[countryIndex],
+                pointBackgroundColor: country.color,
+                pointBorderColor: country.color,
                 pointRadius: 0,
-                backgroundColor: this.state.allColors[countryIndex].substring(0,this.state.allColors[countryIndex].length-2)+'0.5)',
-                borderColor: this.state.allColors[countryIndex],
+                backgroundColor: country.color.substring(0,country.color.length-2)+'0.5)',
+                borderColor: country.color,
                 lineTension: 0,
                 // pointStyle: 'triangle',
                 fill: true,
@@ -275,14 +377,14 @@ class CompareChart extends Component {
                     formatter: function(value, context) {
                         let ret = '';
                         if (context.dataIndex===data.length-1) {
-                            ret = `${country}: ${value} NC`;
+                            ret = `${country.countryName}: ${value} NC`;
                         }
                         return ret;
                     }
                 }
             });
             datasets.push({
-                label: `${country} Last Daily Equivalent`,
+                label: `${country.countryName} Last Daily Equivalent`,
                 data: data.map(point => data[data.length-1].newCases),
                 pointBackgroundColor: 'rgba(211,211,211)',
                 pointBorderColor: 'rgba(211,211,211)',
@@ -314,10 +416,38 @@ class CompareChart extends Component {
             labels: this.props.xLabels,
             datasets: datasets
         }
-        
+    
+        // re-creating countries and setting state
+        countries[cIndex] = country;
         this.setState({
-            lineData: lineData
+            lineData: lineData,
+            countries: [...countries]
         });
+    }
+
+    countryFavClicked = (countryN) => {
+        // getting country object
+        const countries = this.state.countries;
+        const country = countries.filter((c,index) => {
+            return c.countryName === countryN;
+        })[0];
+        let cIndex = countries.findIndex(x => x.countryName === countryN);
+
+        country.fav = !country.fav;
+        // re-creating countries and setting state
+        countries[cIndex] = country;
+        this.setState({
+            countries: [...countries]
+        });
+
+        let favs = this.getCookie('favs');
+        if (country.fav) {
+            favs.push(countryN);
+            favs.sort((a, b) => a.localeCompare(b));
+            this.setCookie('favs', favs, '01-01-2100');
+        } else {
+            this.setCookie('favs', favs.filter((f) => { return f !== countryN }), '01-01-2100');
+        }        
     }
 
     legendClick = (e) => {
@@ -348,7 +478,6 @@ class CompareChart extends Component {
     }
 
     render() {  
-        // this.colors = this.generateColors(this.props.countries.length);
         let confirmedClasses = [classes.LegendButton];
         if (!this.state.cases) {
             confirmedClasses.push(classes.LegendButtonActive);
@@ -377,9 +506,25 @@ class CompareChart extends Component {
                 <div className={classes.Chart}>
                     <LineChart data={this.state.lineData} options={this.state.lineOptions}></LineChart>
                 </div>
+                <div className={classes.FavButtons}>
+                    {this.state.countries.map((country,i) => {
+                        if (country.fav) {
+                            return <CountryButton 
+                                        key={i} 
+                                        country={country} 
+                                        activeCountry={this.countryClicked}
+                                        favCountry={this.countryFavClicked}></CountryButton>
+                        }
+                        return null;
+                    })}
+                </div>
                 <div className={classes.Buttons}>
                     {this.state.countries.map((country,i) => {
-                        return <CountryButton key={i} color={this.state.allColors[i]} active={this.state.countriesActive[i]} country={country} clicked={this.countryClicked}></CountryButton>
+                        return <CountryButton 
+                                    key={i} 
+                                    country={country} 
+                                    activeCountry={this.countryClicked}
+                                    favCountry={this.countryFavClicked}></CountryButton>
                     })}
                 </div>                
             </div>

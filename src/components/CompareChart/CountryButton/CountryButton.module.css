@@ -1,9 +1,41 @@
-.CountryButton {
+.fullButton {
     width: 100%;
-    height: 10%;
-    float: right;
+    height: 40px;
+    /* background-color: olive; */
+}
+
+.favButton {
+    width: 20%;
+    height: 100%;
+    float: left;
+    color: white;	
+    background: #a5c9ec;
+    border: 1px solid rgba(0,0,0,0.21);
+	border-bottom-color: rgba(0,0,0,0.34);
+	text-shadow:0 1px 0 rgba(0,0,0,0.15);
+	box-shadow: 0 1px 0 rgba(255,255,255,0.34) inset, 
+				      0 2px 0 -1px rgba(0,0,0,0.13), 
+				      0 3px 0 -1px rgba(0,0,0,0.08), 
+				      0 3px 13px -1px rgba(0,0,0,0.21);
+}
+
+.favBorder {
+    width: calc(100% - 6px);
+    border: 3px solid rgba(255, 215, 0, 1);
+	border-bottom-color: rgba(255, 215, 0,0.34);
+	text-shadow:0 1px 0 rgba(255, 215, 0,0.15);
+	box-shadow: 0 1px 0 rgba(255,255,255,0.34) inset, 
+				      0 2px 0 -1px rgba(0,0,0,0.13), 
+				      0 3px 0 -1px rgba(0,0,0,0.08), 
+				      0 3px 13px -1px rgba(0,0,0,0.21);
+}
+
+.CountryButton {
+    width: 80%;
+    height: 100%;
+    float: left;
     font-size: 16px;
-    margin: auto auto;
+    margin: 0 0;
     background: #a5c9ec;
     color: white;	
     border: 1px solid rgba(0,0,0,0.21);
@@ -31,19 +63,47 @@
     background-color: rgb(173, 136, 170);	
 }
 
+
+
 @media only screen and (max-width: 600px) {
     .CountryButton {
-        width: 10%;
+        width: 75%;
         height: 100%;
-        display: inline-block;
-        float: left;
+        /* display: inline-block; */
         font-size: 10px;
-        margin: auto auto;
+        margin: 0 0;
+        /* float: left; */
         background: #a5c9ec;
         color: white;	
         border: 1px solid rgba(0,0,0,0.21);
         border-bottom-color: rgba(0,0,0,0.34);
         text-shadow:0 1px 0 rgba(0,0,0,0.15);
+        box-shadow: 0 1px 0 rgba(255,255,255,0.34) inset, 
+                          0 2px 0 -1px rgba(0,0,0,0.13), 
+                          0 3px 0 -1px rgba(0,0,0,0.08), 
+                          0 3px 13px -1px rgba(0,0,0,0.21);
+    }
+
+    .fullButton {
+        display: inline-block;
+        width: 25%;
+        height: 40px;
+        background-color: olive;
+    }
+
+    .favButton {
+        /* display: inline-block; */
+        width: 25%;
+        height: 100%;
+        /* float: left; */
+    }
+
+    .favBorder {
+        width: calc(25% - 6px);
+        height: calc(40px - 6px);
+        border: 3px solid rgba(255, 215, 0, 1);
+        border-bottom-color: rgba(255, 215, 0,0.34);
+        text-shadow:0 1px 0 rgba(255, 215, 0,0.15);
         box-shadow: 0 1px 0 rgba(255,255,255,0.34) inset, 
                           0 2px 0 -1px rgba(0,0,0,0.13), 
                           0 3px 0 -1px rgba(0,0,0,0.08), 

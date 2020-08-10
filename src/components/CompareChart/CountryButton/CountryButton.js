@@ -3,12 +3,21 @@ import classes from './CountryButton.module.css';
 
 const countryButton = (props) => {
     let bg = '#a5c9ec';
+    let string = "+";
+    let border = '';
     let allClasses = [classes.CountryButton];
-    if (props.active) {
-        bg = props.color;
+    if (props.country.active) {
+        bg = props.country.color;
+    }
+    if (props.country.fav) {
+        string = "-"
+        border = classes.favBorder;
     }
     return (
-        <button className={allClasses.join(' ')} style={{backgroundColor:bg}} onClick={(e) => props.clicked(e)} value={props.country}>{props.country}</button>
+        <div className={[classes.fullButton, border].join(' ')}>            
+            <button className={allClasses.join(' ')} style={{backgroundColor:bg}} onClick={(e) => props.activeCountry(e)} value={props.country.countryName}>{props.country.countryName}</button>
+            <button className={classes.favButton} onClick={() => props.favCountry(props.country.countryName)}>{string}</button>
+        </div>
     );
 }
 
