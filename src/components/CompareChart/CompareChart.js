@@ -6,6 +6,7 @@ import CountryButton from './CountryButton/CountryButton';
 class CompareChart extends Component {
     constructor(props) {
         super(props);
+        alert(this.getCookie('favs'));
         this.state = {
             countries: [],
             data: props.data,
@@ -202,6 +203,7 @@ class CompareChart extends Component {
                 return c.substring(nameEQ.length,c.length).split(',');
             }
         }
+        this.setCookie(name,[],new Date('01/01/2100'));
         return null;
     }
 
@@ -444,9 +446,9 @@ class CompareChart extends Component {
         if (country.fav) {
             favs.push(countryN);
             favs.sort((a, b) => a.localeCompare(b));
-            this.setCookie('favs', favs, '01-01-2100');
+            this.setCookie('favs', favs, new Date('01/01/2100'));
         } else {
-            this.setCookie('favs', favs.filter((f) => { return f !== countryN }), '01-01-2100');
+            this.setCookie('favs', favs.filter((f) => { return f !== countryN }), new Date('01/01/2100'));
         }        
     }
 
